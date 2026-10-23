@@ -3,7 +3,7 @@ schema_version: 1
 
 context:
   name: fleche
-  version: "0.22.1"
+  version: "0.22.2"
   python_min: "3.11"
 
 recipe:
@@ -12,7 +12,7 @@ recipe:
 
 source:
   url: https://pypi.org/packages/source/${{ name[0] }}/${{ name }}/${{ name }}-${{ version }}.tar.gz
-  sha256: d9fa963e4e8c1a8d85c964053db61f24fdf9c06a1ffb3627d6355fe24de11cb1
+  sha256: 2c8898985b88a1266fc193123eab85b9569fe68a3aa2e283c406ef71e3e28dd0
 
 build:
   number: 0
