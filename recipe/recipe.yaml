@@ -3,7 +3,7 @@ schema_version: 1
 
 context:
   name: fleche
-  version: "0.23.1"
+  version: "0.24.0"
   python_min: "3.11"
 
 recipe:
@@ -12,7 +12,7 @@ recipe:
 
 source:
   url: https://pypi.org/packages/source/${{ name[0] }}/${{ name }}/${{ name }}-${{ version }}.tar.gz
-  sha256: 6a858d92d6fa55f884dd900738e47bcc6fd15d6155ed06819f9979d41aa35ab1
+  sha256: 4131f3d070f2cdbd3cb75ee9d707dcfb5edaeeebdb5aefe4884ab88e6ff51fef
 
 build:
   number: 0
@@ -29,12 +29,10 @@ outputs:
       host:
         - python ${{ python_min }}.*
         - setuptools >=64.0
-        - setuptools-scm >=8
+        - setuptools-scm >=9
         - pip
       run:
         - python >=${{ python_min }},<3.15
-        - numpy
-        - pandas >=2.2,<4
         - pyiron_snippets
         - filelock
     tests:
@@ -46,11 +44,19 @@ outputs:
             - ${{ python_min }}.*
             - '*'
 
-  # Full install: metapackage pulling fleche-base plus all optional runtime deps.
+  # Full install: metapackage pulling fleche-base plus all optional runtime deps
+  # and the digest hooks for numpy and pandas.  fleche-numpy and fleche-pandas
+  # are released independently from fleche's repository and have feedstocks of
+  # their own; they depend on fleche-base, never on this metapackage.
   - package:
       name: fleche
     build:
       noarch: generic
+      # Bootstrap for 0.24.0: fleche-numpy and fleche-pandas need
+      # fleche-base >=0.24, so they can only reach conda-forge after this
+      # build has published it.  Revert this commit (and bump the build
+      # number) once they are available.
+      skip: true
     requirements:
       run:
         - python >=${{ python_min }},<3.15
@@ -58,7 +64,9 @@ outputs:
         - cloudpickle
         - dill
         - sqlalchemy
-        - bagofholding ==0.1.12
+        - bagofholding >=0.1.12,<0.1.17
+        - fleche-numpy
+        - fleche-pandas
     tests:
       - python:
           imports:
@@ -79,7 +87,9 @@ outputs:
             - cloudpickle
             - dill
             - sqlalchemy
-            - bagofholding ==0.1.12
+            - bagofholding >=0.1.12,<0.1.17
+            - fleche-numpy
+            - fleche-pandas
 
 about:
   homepage: https://github.com/pmrv/fleche
